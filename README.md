@@ -1,5 +1,5 @@
 
-[![Nuget](https://img.shields.io/badge/Nuget-v1.7.0-blue?logo=nuget)](https://www.nuget.org/packages/AvroConvert)
+[![Nuget](https://img.shields.io/badge/Nuget-v1.8.0-blue?logo=nuget)](https://www.nuget.org/packages/AvroConvert)
 [![Github](https://img.shields.io/badge/Downloads-3k-blue?logo=github)](https://github.com/AdrianStrugala/AvroConvert)
 
 # AvroConvert
@@ -22,15 +22,45 @@ Wiki: https://cwiki.apache.org/confluence/display/AVRO/Index
 
 #### Serialization
 ```csharp
-  byte[] avroObject = AvroConvert.Serialize(object yourObject);
+ byte[] avroObject = AvroConvert.Serialize(object yourObject);
 ```
 
 #### Deserialization
-```csharp
-  CustomClass deserializedObject = AvroConvert.Deserialize<CustomClass>(byte[] avroObject);
 
-  Dictionary<string, object> mapOfPropertiesAndValues = AvroConvert.Deserialize(byte[] avroObject);  
+Deserialization to known type
+```csharp
+CustomClass deserializedObject = AvroConvert.Deserialize<CustomClass>(byte[] avroObject);
 ```
+
+Deserialization to map of property names and values
+```csharp
+Dictionary<string, object> mapOfPropertiesAndValues = AvroConvert.Deserialize(byte[] avroObject);  
+```
+
+Deserialization when a property value is null, but schema contains information about default value
+```csharp
+//Model used for serialization
+public class DefaultValueClass
+{
+    [DefaultValue("Let's go")]
+    public string justSomeProperty { get; set; }
+
+    [DefaultValue(2137)]
+    public long? andLongProperty { get; set; }
+}
+
+//Deserializing object with null data
+ DefaultValueClass deserializedObject = AvroConvert.Deserialize<DefaultValueClass>(byte[] avroObject);
+
+//Produces following object:
+> deserializedObject.justSomeProperty
+> "Let's go"
+
+> deserializedObject.andLongProperty
+> 2137
+```
+```
+
 #### Generating Avro schema for C# classes
 
 Using simple class
