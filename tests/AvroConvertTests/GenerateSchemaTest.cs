@@ -93,5 +93,62 @@
             //Assert
             Assert.Contains("{\"type\":\"record\",\"name\":\"AvroConvertTests.MixedDataMembers\",\"fields\":[{\"name\":\"savedValues\",\"type\":{\"type\":\"array\",\"items\":\"int\"}},{\"name\":\"andAnother\",\"type\":[\"null\",\"long\"]}]}", schema);
         }
+
+        [Fact]
+        public void GenerateSchema_ClassWithSimpleListWithoutDataMemberAttribute_SchemaContainsListAsArray(){
+            //Arrange
+
+            //Act
+            string schema = AvroConvert.GenerateSchema(typeof(ClassWithSimpleList));
+            //Asert
+            Assert.Contains("[{\"name\":\"someList\",\"type\":{\"type\":\"array\",\"items\":\"int\"}}]", schema);
+        }
+
+        [Fact]
+        public void GenerateSchema_ClassWithSimpleListWithDatatMemberAttribute_SchemaContainsListAsArray(){
+            //Arrange
+
+            //Act
+            string schema = AvroConvert.GenerateSchema(typeof(ClassWithSimpleListAndDataMemberAttribute), includeOnlyDataContractMembers: true);
+            //Asert
+            Assert.Contains("[{\"name\":\"someList\",\"type\":{\"type\":\"array\",\"items\":\"int\"}}]", schema);
+        }
+
+        
+        [Fact]
+        public void GenerateSchema_ComplexClassWithoutDataMemberAttribute_SchemaContainsTheComplexObjects(){
+            //Arrange
+
+            //Act
+            string schema = AvroConvert.GenerateSchema(typeof(VeryComplexClass));
+            //Asert
+            Assert.Contains("[{\"name\":\"ClassesWithArray\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"AvroConvertTests.ClassWithArray\",\"fields\":[{\"name\":\"theArray\",\"type\":{\"type\":\"array\",\"items\":\"int\"}}]}}},{\"name\":\"ClassesWithGuid\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"AvroConvertTests.ClassWithGuid\",\"fields\":[{\"name\":\"theGuid\",\"type\":{\"type\":\"fixed\",\"name\":\"System.Guid\",\"size\":16}}]}}},{\"name\":\"anotherClass\",\"type\":{\"type\":\"record\",\"name\":\"AvroConvertTests.ClassWithConstructorPopulatingProperty\",\"fields\":[{\"name\":\"nestedList\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"AvroConvertTests.NestedTestClass\",\"fields\":[{\"name\":\"justSomeProperty\",\"type\":[\"null\",\"string\"]},{\"name\":\"andLongProperty\",\"type\":\"long\"}]}}},{\"name\":\"anotherList\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"AvroConvertTests.ClassWithSimpleList\",\"fields\":[{\"name\":\"someList\",\"type\":{\"type\":\"array\",\"items\":\"int\"}}]}}},{\"name\":\"stringProperty\",\"type\":[\"null\",\"string\"]}]}},{\"name\":\"simpleClass\",\"type\":{\"type\":\"record\",\"name\":\"AvroConvertTests.User\",\"fields\":[{\"name\":\"name\",\"type\":[\"null\",\"string\"]},{\"name\":\"favorite_number\",\"type\":[\"null\",\"int\"]},{\"name\":\"favorite_color\",\"type\":[\"null\",\"string\"]}]}},{\"name\":\"simpleObject\",\"type\":\"int\"},{\"name\":\"bools\",\"type\":{\"type\":\"array\",\"items\":\"boolean\"}},{\"name\":\"doubleProperty\",\"type\":\"double\"},{\"name\":\"floatProperty\",\"type\":\"float\"}]", schema);
+            Assert.Contains("[{\"name\":\"ClassesWithArray\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"AvroConvertTests.ClassWithArray\",\"fields\":[{\"name\":\"theArray\",\"type\":{\"type\":\"array\",\"items\":\"int\"}}]}}}", schema);
+            Assert.Contains("{\"name\":\"ClassesWithGuid\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"AvroConvertTests.ClassWithGuid\",\"fields\":[{\"name\":\"theGuid\",\"type\":{\"type\":\"fixed\",\"name\":\"System.Guid\",\"size\":16}}]}}}", schema);
+            Assert.Contains("{\"name\":\"anotherClass\",\"type\":{\"type\":\"record\",\"name\":\"AvroConvertTests.ClassWithConstructorPopulatingProperty\",\"fields\":[{\"name\":\"nestedList\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"AvroConvertTests.NestedTestClass\",\"fields\":[{\"name\":\"justSomeProperty\",\"type\":[\"null\",\"string\"]},{\"name\":\"andLongProperty\",\"type\":\"long\"}]}}},{\"name\":\"anotherList\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"AvroConvertTests.ClassWithSimpleList\",\"fields\":[{\"name\":\"someList\",\"type\":{\"type\":\"array\",\"items\":\"int\"}}]}}},{\"name\":\"stringProperty\",\"type\":[\"null\",\"string\"]}]}},{\"name\":\"simpleClass\",\"type\":{\"type\":\"record\",\"name\":\"AvroConvertTests.User\",\"fields\":[{\"name\":\"name\",\"type\":[\"null\",\"string\"]},{\"name\":\"favorite_number\",\"type\":[\"null\",\"int\"]},{\"name\":\"favorite_color\",\"type\":[\"null\",\"string\"]}]}}", schema);
+            Assert.Contains("{\"name\":\"simpleClass\",\"type\":{\"type\":\"record\",\"name\":\"AvroConvertTests.User\",\"fields\":[{\"name\":\"name\",\"type\":[\"null\",\"string\"]},{\"name\":\"favorite_number\",\"type\":[\"null\",\"int\"]},{\"name\":\"favorite_color\",\"type\":[\"null\",\"string\"]}]}}", schema);
+            Assert.Contains("{\"name\":\"simpleObject\",\"type\":\"int\"}", schema);
+            Assert.Contains("{\"name\":\"doubleProperty\",\"type\":\"double\"}", schema);
+            Assert.Contains("{\"name\":\"floatProperty\",\"type\":\"float\"}]", schema);
+
+        }
+
+        [Fact]
+        public void GenerateSchema_ComplexClassWithDatatMemberAttribute_SchemaContainsTheComplexObjects(){
+            //Arrange
+
+            //Act
+            string schema = AvroConvert.GenerateSchema(typeof(VeryComplexClassWithDataMemberAttribute), includeOnlyDataContractMembers: true);
+            //Asert
+            Assert.Contains("[{\"name\":\"ClassesWithArray\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"AvroConvertTests.ClassWithArray\",\"fields\":[{\"name\":\"theArray\",\"type\":{\"type\":\"array\",\"items\":\"int\"}}]}}}", schema);
+            Assert.Contains("{\"name\":\"ClassesWithGuid\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"AvroConvertTests.ClassWithGuid\",\"fields\":[{\"name\":\"theGuid\",\"type\":{\"type\":\"fixed\",\"name\":\"System.Guid\",\"size\":16}}]}}}", schema);
+            Assert.Contains("{\"name\":\"anotherClass\",\"type\":{\"type\":\"record\",\"name\":\"AvroConvertTests.ClassWithConstructorPopulatingProperty\",\"fields\":[{\"name\":\"nestedList\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"AvroConvertTests.NestedTestClass\",\"fields\":[{\"name\":\"justSomeProperty\",\"type\":[\"null\",\"string\"]},{\"name\":\"andLongProperty\",\"type\":\"long\"}]}}},{\"name\":\"anotherList\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"AvroConvertTests.ClassWithSimpleList\",\"fields\":[{\"name\":\"someList\",\"type\":{\"type\":\"array\",\"items\":\"int\"}}]}}},{\"name\":\"stringProperty\",\"type\":[\"null\",\"string\"]}]}},{\"name\":\"simpleClass\",\"type\":{\"type\":\"record\",\"name\":\"AvroConvertTests.User\",\"fields\":[{\"name\":\"name\",\"type\":[\"null\",\"string\"]},{\"name\":\"favorite_number\",\"type\":[\"null\",\"int\"]},{\"name\":\"favorite_color\",\"type\":[\"null\",\"string\"]}]}}", schema);
+            Assert.Contains("{\"name\":\"simpleClass\",\"type\":{\"type\":\"record\",\"name\":\"AvroConvertTests.User\",\"fields\":[{\"name\":\"name\",\"type\":[\"null\",\"string\"]},{\"name\":\"favorite_number\",\"type\":[\"null\",\"int\"]},{\"name\":\"favorite_color\",\"type\":[\"null\",\"string\"]}]}}", schema);
+            Assert.Contains("{\"name\":\"simpleObject\",\"type\":\"int\"}", schema);
+            Assert.Contains("{\"name\":\"doubleProperty\",\"type\":\"double\"}", schema);
+            Assert.Contains("{\"name\":\"floatProperty\",\"type\":\"float\"}]", schema);
+
+        }
+
     }
 }

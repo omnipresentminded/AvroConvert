@@ -73,6 +73,19 @@ namespace AvroConvertTests
     }
 
     [Equals]
+    [DataContract(Name = "ClassWithSimpleList", Namespace = "Testing")]
+    public class ClassWithSimpleListAndDataMemberAttribute
+    {
+        [DataMember]
+        public List<int> someList { get; set; }
+
+        public ClassWithSimpleListAndDataMemberAttribute()
+        {
+            someList = new List<int>();
+        }
+    }
+
+    [Equals]
     public class ClassWithArray
     {
         public int[] theArray { get; set; }
@@ -95,6 +108,30 @@ namespace AvroConvertTests
         public List<bool> bools { get; set; }
         public double doubleProperty { get; set; }
         public float floatProperty { get; set; }
+      
+    }
+
+   [Equals]
+   [DataContract(Name = "VeryComplexClassWithDataMemberAttribute", Namespace = "Testing")]
+    public class VeryComplexClassWithDataMemberAttribute
+    {
+        [DataMember]
+        public List<ClassWithArray> ClassWithArray { get; set; }
+        [DataMember]
+        public ClassWithGuid[] ClassesWithGuid { get; set; }
+        [DataMember]
+        public ClassWithConstructorPopulatingProperty anotherClass { get; set; }
+        [DataMember]
+        public User simpleClass { get; set; }
+        [DataMember]
+        public int simpleObject { get; set; }
+        [DataMember]
+        public List<bool> bools { get; set; }
+        [DataMember]
+        public double doubleProperty { get; set; }
+        [DataMember]
+        public float floatProperty { get; set; }
+
     }
 
 
